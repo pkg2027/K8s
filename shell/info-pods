@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Usage/help message
+usage() {
+  echo "Usage: $0 [namespace]"
+  echo "Example: $0 default"
+  echo "If no namespace is provided, 'default' is used."
+  exit 1
+}
+
+# Help flag
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  usage
+fi
+
+# Set namespace from first argument, or use default
+NAMESPACE="${1:-default}"
+
+echo "----------------------------------------------------------------------------------------------"
+echo "Namespace: $NAMESPACE"
+echo "----------------------------------------------------------------------------------------------"
+echo "### DEPLOYED PODS ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers | nl
+
+echo "### PODS DEPLOYED IN [node-1] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers | nl | grep "node-1"
+
+echo "### PODS DEPLOYED IN [node-2] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers | nl | grep "node-2"
+
+echo "### PODS DEPLOYED IN [node-3] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers | nl | grep "node-3"
+
+echo "### DEPLOYED PODS RESOURCES ###"
+kubectl -n "$NAMESPACE" top pods --sum
+
+echo "### ALL POD RESOURCE (ALL NAMESPACES) ###"
+kubectl top pods --containers -A --sum
+
+echo "----------------------------------------------------------------------------------------------"
+
