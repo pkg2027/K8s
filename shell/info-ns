@@ -8,9 +8,9 @@ fi
 
 N="$1"
 
-echo "----------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------------------------------"
 echo "Namespace: $N"
-echo "----------------------------------------------------------------------------------------------"
+echo "----------------------------------------------------------------------------------------------------------------------------"
 echo "### DEPLOYMENT ###"
 kubectl -n "$N" get deploy -o wide
 for d in $(kubectl -n "$N" get deploy --no-headers | awk '{print $1}'); do   kubectl -n cri describe deploy "$d" | grep Selector:; done
@@ -21,8 +21,15 @@ echo "### REPLICA SETS ###"
 kubectl -n "$N" get rs -o wide
 echo "### HORIZONTAL POD AUTO-SCALE ###"
 kubectl -n "$N" get hpa
-echo "### RUNNING AND READY PODS ###"
-kubectl -n "$N" get pods -o wide | grep "1/1" | grep -v "Terminating"
+echo "### RUNNING AND READY PODS IN [NODE-1] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+| awk '!/Terminating/ && /node-1/ {print NR, $0}'
+echo "### RUNNING AND READY PODS IN [NODE-2] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+| awk '!/Terminating/ && /node-2/ {print NR, $0}'
+echo "### RUNNING AND READY PODS IN [NODE-3] ###"
+kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+| awk '!/Terminating/ && /node-3/ {print NR, $0}'
 echo "### TO BE READY SOON / FAILED PODS ###"
 kubectl -n "$N" get pods -o wide | grep "0/1"
 echo "### TERMINATING PODS  ###"
@@ -33,5 +40,7 @@ echo "### NODES ###"
 kubectl get nodes -o wide
 echo "### NODE RESOURCE ###"
 kubectl top node
-echo "----------------------------------------------------------------------------------------------"
+echo "---------------------------------------------------------------------------------------------------------------------------"
 
+# MODIFICATION TO BE DOWN BEFORE USE !!
+# NODE NAME NEEDS TO BE REPLACED ACCORDING TO YOUR <NODE NAME>
