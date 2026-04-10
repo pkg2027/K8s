@@ -13,6 +13,8 @@ echo "Namespace: $N"
 echo "----------------------------------------------------------------------------------------------"
 echo "### DEPLOYMENT ###"
 kubectl -n "$N" get deploy -o wide
+for d in $(kubectl -n cri get deploy --no-headers | awk '{print $1}'); do   kubectl -n cri describe deploy "$d" | grep Selector:; done
+for d in $(kubectl -n cri get deploy --no-headers | awk '{print $1}'); do   kubectl -n cri describe deploy "$d" | grep Replicas:; done
 echo "### SERVICE ###"
 kubectl -n "$N" get svc -o wide | grep "NodePort"
 echo "### REPLICA SETS ###"
