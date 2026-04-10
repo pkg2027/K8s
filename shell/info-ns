@@ -22,13 +22,13 @@ kubectl -n "$N" get rs -o wide
 echo "### HORIZONTAL POD AUTO-SCALE ###"
 kubectl -n "$N" get hpa
 echo "### RUNNING AND READY PODS IN [NODE-1] ###"
-kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+kubectl -n "$N" get pods -o wide --no-headers \
 | awk '!/Terminating/ && /node-1/ {print NR, $0}'
 echo "### RUNNING AND READY PODS IN [NODE-2] ###"
-kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+kubectl -n "$N" get pods -o wide --no-headers \
 | awk '!/Terminating/ && /node-2/ {print NR, $0}'
 echo "### RUNNING AND READY PODS IN [NODE-3] ###"
-kubectl -n "$NAMESPACE" get pods -o wide --no-headers \
+kubectl -n "$N" get pods -o wide --no-headers \
 | awk '!/Terminating/ && /node-3/ {print NR, $0}'
 echo "### TO BE READY SOON / FAILED PODS ###"
 kubectl -n "$N" get pods -o wide | grep "0/1"
